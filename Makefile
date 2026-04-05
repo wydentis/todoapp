@@ -36,7 +36,7 @@ migrate-create:
 	docker compose run --rm todoapp-postgres-migrate \
 		create \
 		-ext sql \
-		-dir $(PROJECT_ROOT)/migrations \
+		-dir /migrations \
 		-seq "$(seq)"
 
 migrate-up:
@@ -51,7 +51,7 @@ migrate-action:
 		exit 1; \
 	fi; \
 	docker compose run --rm todoapp-postgres-migrate \
-		-path $(PROJECT_ROOT)/migrations \
+		-path /migrations \
 		-database postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@todoapp-postgres:5432/$(POSTGRES_DB)?sslmode=disable \
 		$(action)
 
