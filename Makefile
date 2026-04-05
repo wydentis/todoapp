@@ -12,11 +12,10 @@ env-down:
 	@docker compose down todoapp-postgres port-forwarder
 
 env-cleanup:
-	@read -p "delete all env volume's files? [y/N]: " ans; \
+	@read -p "delete all docker volumes? [y/N]: " ans; \
 	if [ "$$ans" = "y" ]; then \
-		docker compose down todoapp-postgres port-forwarder && \
-		docker volume rm todoapp_postgres_data && \
-		echo "volume's files deleted"; \
+		docker compose down todoapp-postgres port-forwarder -v && \
+		echo "docker volumes deleted"; \
 	else \
 		echo "operation canceled"; \
 	fi
@@ -37,7 +36,7 @@ migrate-create:
 	docker compose run --rm todoapp-postgres-migrate \
 		create \
 		-ext sql \
-		-dir /migrations \
+		-dir $(PROJECT_ROOT)/migrations \
 		-seq "$(seq)"
 
 migrate-up:
@@ -52,7 +51,7 @@ migrate-action:
 		exit 1; \
 	fi; \
 	docker compose run --rm todoapp-postgres-migrate \
-		-path /migrations \
+		-path $(PROJECT_ROOT)/migrations \
 		-database postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@todoapp-postgres:5432/$(POSTGRES_DB)?sslmode=disable \
 		$(action)
 
@@ -61,4 +60,4 @@ todoapp-run:
 	@export LOGGER_FOLDER=$(PROJECT_ROOT)/out/logs && \
 	export POSTGRES_HOST=localhost && \
 	go mod tidy && \
-	go run cmd/todoapp/main.go
+	go run $(PROJECT_ROOT)/cmd/todoapp/main.go
