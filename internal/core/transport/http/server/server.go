@@ -64,7 +64,7 @@ func (s *HTTPServer) Run(ctx context.Context) error {
 	select {
 	case err := <-ch:
 		if err != nil {
-			return fmt.Errorf("listen and serve HTTP: %w", err)
+			return fmt.Errorf("listen and server HTTP: %w", err)
 		}
 	case <-ctx.Done():
 		s.log.Warn("shutdown HTTP server...")
